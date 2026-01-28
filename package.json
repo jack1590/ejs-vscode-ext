@@ -2,7 +2,7 @@
     "name": "ejs-navigator",
     "displayName": "EJS Navigator for Roku",
     "description": "Navigate from EJS templates to json definitions - Go to Definition and Hover support for BrightScript",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "publisher": "jack1590",
     "author": {
         "name": "Juan Joya"
