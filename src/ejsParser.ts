@@ -5,6 +5,7 @@ export interface EjsInfo {
     prefix?: string;
     range: vscode.Range;
     fullMatch: string;
+    partialPath?: string; // The path up to where the cursor is
 }
 
 export class EjsParser {
@@ -41,6 +42,11 @@ export class EjsParser {
                     // Parse the path - might have CONST. or other prefixes
                     const pathInfo = this.parsePath(captured);
                     
+                    // Determine which part of the path the cursor is over
+                    const pathStartInMatch = lineText.indexOf(captured, matchStart);
+                    const cursorOffsetInPath = position.character - pathStartInMatch;
+                    const partialPath = this.getPartialPathAtOffset(pathInfo.path, cursorOffsetInPath);
+                    
                     return {
                         path: pathInfo.path,
                         prefix: pathInfo.prefix,
@@ -50,7 +56,8 @@ export class EjsParser {
                             position.line,
                             matchEnd
                         ),
-                        fullMatch: match[0]
+                        fullMatch: match[0],
+                        partialPath: partialPath
                     };
                 }
             }
@@ -79,6 +86,29 @@ export class EjsParser {
             path: captured,
             prefix: undefined
         };
+    }
+
+    private static getPartialPathAtOffset(fullPath: string, cursorOffset: number): string {
+        // Find which segment of the path the cursor is over
+        // e.g., "Hero.default.heroWrapper.liveTag.visible"
+        //       cursor at position 15 (in "heroWrapper") -> "Hero.default.heroWrapper"
+        
+        if (cursorOffset < 0 || cursorOffset > fullPath.length) {
+            return fullPath;
+        }
+
+        // Find the last dot before or at the cursor position
+        let pathUpToCursor = fullPath.substring(0, cursorOffset);
+        
+        // If cursor is in the middle of a segment, include the whole segment
+        let nextDotIndex = fullPath.indexOf('.', cursorOffset);
+        if (nextDotIndex === -1) {
+            // Cursor is in the last segment
+            return fullPath;
+        }
+        
+        // Include up to the next dot (current segment)
+        return fullPath.substring(0, nextDotIndex);
     }
 
     static extractAllEjsPaths(text: string): string[] {

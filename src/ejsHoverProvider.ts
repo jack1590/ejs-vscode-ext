@@ -16,14 +16,17 @@ export class EjsHoverProvider implements vscode.HoverProvider {
             return null;
         }
 
-        const { path, prefix } = ejsInfo;
+        const { path, prefix, partialPath } = ejsInfo;
+        
+        // Use partial path if available (cursor is over a specific segment)
+        const lookupPath = partialPath || path;
 
         // Try to find the path in the index
-        let location = this.jsonIndexer.getLocation(path);
+        let location = this.jsonIndexer.getLocation(lookupPath);
 
         // If not found and there's a prefix, try without the prefix
         if (!location && prefix) {
-            const pathWithoutPrefix = path.replace(`${prefix}.`, '');
+            const pathWithoutPrefix = lookupPath.replace(`${prefix}.`, '');
             location = this.jsonIndexer.getLocation(pathWithoutPrefix);
         }
 
@@ -34,6 +37,9 @@ export class EjsHoverProvider implements vscode.HoverProvider {
         // Format the value for display
         const valueStr = this.formatValue(location.value);
         const hoverText = new vscode.MarkdownString();
+        
+        // Show the path being displayed
+        hoverText.appendMarkdown(`**${lookupPath}**\n\n`);
         hoverText.appendCodeblock(valueStr, 'json');
         hoverText.appendText(`\n\nDefined in: ${location.uri.fsPath.split('/').pop()}:${location.line + 1}`);
 
