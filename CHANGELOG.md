@@ -19,6 +19,10 @@ All notable changes to the "EJS Navigator for Roku" extension will be documented
   - Default: `["product/descarga.json", "data/constants.json"]`
   - Supports patterns like `data/**/*.json` or `config/*.json`
   - Auto-reindexing when settings change
+- **Visual Documentation**: Feature screenshots demonstrating all capabilities
+  - Go to Definition screenshot showing navigation in action
+  - Hover Preview screenshot showing tooltip with object data
+  - Autocomplete screenshot showing intelligent suggestions
 
 ### Fixed
 - **Nested Path Navigation**: Dramatically improved accuracy for deeply nested paths
