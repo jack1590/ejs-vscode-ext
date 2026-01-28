@@ -37,7 +37,8 @@ export class JsonIndexer {
         obj: any,
         prefix: string,
         document: vscode.TextDocument,
-        fullContent: string
+        fullContent: string,
+        startOffset: number = 0
     ): void {
         if (typeof obj !== 'object' || obj === null) {
             return;
@@ -47,8 +48,8 @@ export class JsonIndexer {
             const fullKey = prefix ? `${prefix}.${key}` : key;
             const value = obj[key];
 
-            // Find the line number for this key
-            const location = this.findKeyLocation(key, fullKey, value, document, fullContent);
+            // Find the line number for this key starting from the current offset
+            const location = this.findKeyLocation(key, fullKey, value, document, fullContent, startOffset);
             
             if (location) {
                 this.index.set(fullKey, {
@@ -58,11 +59,11 @@ export class JsonIndexer {
                     value: value,
                     endLine: location.endLine
                 });
-            }
 
-            // Recursively index nested objects
-            if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-                this.indexObject(uri, value, fullKey, document, fullContent);
+                // Recursively index nested objects, starting search after this key
+                if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+                    this.indexObject(uri, value, fullKey, document, fullContent, location.valueStartOffset);
+                }
             }
         }
     }
@@ -72,64 +73,51 @@ export class JsonIndexer {
         fullKey: string,
         value: any,
         document: vscode.TextDocument,
-        fullContent: string
-    ): { line: number; column: number; endLine: number } | null {
-        // Create a regex to find the key in JSON
-        // This handles both "key": value and "key" : value patterns
+        fullContent: string,
+        startOffset: number = 0
+    ): { line: number; column: number; endLine: number; valueStartOffset: number } | null {
+        // Search for the key starting from the given offset
         const keyPattern = new RegExp(`"${this.escapeRegex(key)}"\\s*:`, 'g');
+        keyPattern.lastIndex = startOffset;
         
-        let match;
-        const matches: { index: number; line: number; column: number }[] = [];
+        const match = keyPattern.exec(fullContent);
         
-        while ((match = keyPattern.exec(fullContent)) !== null) {
-            const position = document.positionAt(match.index);
-            matches.push({
-                index: match.index,
-                line: position.line,
-                column: position.character
-            });
+        if (!match) {
+            return null;
         }
 
-        // If we have multiple matches, try to find the most relevant one
-        // For now, just return the first match
-        if (matches.length > 0) {
-            const match = matches[0];
+        const position = document.positionAt(match.index);
+        const valueStartOffset = match.index + match[0].length;
+        
+        // Calculate end line
+        let endLine = position.line;
+        
+        if (typeof value === 'object' && value !== null) {
+            // For objects/arrays, scan forward to find closing bracket
+            let braceCount = 0;
+            let inValue = false;
             
-            // Try to find the end of this value
-            let endLine = match.line;
-            const valueStr = JSON.stringify(value);
-            if (typeof value === 'object' && value !== null) {
-                // For objects/arrays, scan forward to find closing bracket
-                const text = document.getText();
-                const startIndex = document.offsetAt(new vscode.Position(match.line, 0));
-                let braceCount = 0;
-                let inValue = false;
-                
-                for (let i = match.index; i < text.length && endLine - match.line < 100; i++) {
-                    const char = text[i];
-                    if (char === '{' || char === '[') {
-                        braceCount++;
-                        inValue = true;
-                    } else if (char === '}' || char === ']') {
-                        braceCount--;
-                        if (inValue && braceCount === 0) {
-                            endLine = document.positionAt(i).line;
-                            break;
-                        }
+            for (let i = valueStartOffset; i < fullContent.length && endLine - position.line < 500; i++) {
+                const char = fullContent[i];
+                if (char === '{' || char === '[') {
+                    braceCount++;
+                    inValue = true;
+                } else if (char === '}' || char === ']') {
+                    braceCount--;
+                    if (inValue && braceCount === 0) {
+                        endLine = document.positionAt(i).line;
+                        break;
                     }
                 }
-            } else {
-                endLine = match.line;
             }
-            
-            return {
-                line: match.line,
-                column: match.column,
-                endLine: endLine
-            };
         }
-
-        return null;
+        
+        return {
+            line: position.line,
+            column: position.character,
+            endLine: endLine,
+            valueStartOffset: valueStartOffset
+        };
     }
 
     private escapeRegex(str: string): string {
