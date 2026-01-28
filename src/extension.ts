@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { EjsDefinitionProvider } from './ejsDefinitionProvider';
 import { EjsHoverProvider } from './ejsHoverProvider';
+import { EjsCompletionProvider } from './ejsCompletionProvider';
 import { JsonIndexer } from './jsonIndexer';
 
 export function activate(context: vscode.ExtensionContext) {
@@ -52,6 +53,24 @@ export function activate(context: vscode.ExtensionContext) {
                 { scheme: 'file', pattern: '**/*.xml' }
             ],
             hoverProvider
+        )
+    );
+
+    // Register completion provider
+    const completionProvider = new EjsCompletionProvider(jsonIndexer);
+    context.subscriptions.push(
+        vscode.languages.registerCompletionItemProvider(
+            [
+                { scheme: 'file', language: 'brightscript' },
+                { scheme: 'file', pattern: '**/*.bs' },
+                { scheme: 'file', pattern: '**/*.brs' },
+                { scheme: 'file', language: 'xml' },
+                { scheme: 'file', pattern: '**/*.xml' }
+            ],
+            completionProvider,
+            '.', // Trigger on dot
+            '(', // Trigger on opening parenthesis
+            ' '  // Trigger on space
         )
     );
 
