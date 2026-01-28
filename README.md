@@ -28,8 +28,57 @@ Navigate from EJS template variables in your Roku BrightScript code to their def
 
 ## Configuration
 
-- `ejsNavigator.productDataPath`: Path to descarga.json (default: "product/descarga.json")
-- `ejsNavigator.constantsPath`: Path to constants.json (default: "data/constants.json")
+The extension can be configured in VSCode settings (Settings → Extensions → EJS Navigator):
+
+### `ejsNavigator.jsonFiles` (Array)
+
+Specify which JSON files to index. Supports both specific file paths and glob patterns.
+
+**Default:**
+```json
+[
+  "product/descarga.json",
+  "data/constants.json"
+]
+```
+
+**Examples:**
+
+```json
+// Specific files
+{
+  "ejsNavigator.jsonFiles": [
+    "product/descarga.json",
+    "data/constants.json",
+    "config/app-config.json"
+  ]
+}
+
+// Using glob patterns
+{
+  "ejsNavigator.jsonFiles": [
+    "product/**/*.json",
+    "data/**/*.json",
+    "config/*.json"
+  ]
+}
+
+// Mixed approach
+{
+  "ejsNavigator.jsonFiles": [
+    "product/descarga.json",
+    "data/**/*.json"
+  ]
+}
+```
+
+**Glob Pattern Examples:**
+- `data/*.json` - All JSON files directly in the data folder
+- `data/**/*.json` - All JSON files in data folder and subfolders
+- `**/*.config.json` - All .config.json files in the workspace
+- `product/descarga.json` - Specific file
+
+The extension will automatically re-index when you change these settings.
 
 ## Development
 
