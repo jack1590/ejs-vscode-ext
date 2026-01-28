@@ -2,9 +2,9 @@
 
 A powerful VSCode extension that provides intelligent navigation, hover previews, and autocomplete for EJS template variables in Roku BrightScript code. Navigate seamlessly between your code and JSON configuration files.
 
-![Go to Definition Demo](images/demos/go-to-definition.png)
-![Hover Preview Demo](images/demos/hover-preview.png)
-![Autocomplete Demo](images/demos/autocomplete.png)
+![Go to Definition Demo](images/demos/go-to-definition.gif)
+![Hover Preview Demo](images/demos/hover-preview.gif)
+![Autocomplete Demo](images/demos/autocomplete.gif)
 
 ## Features
 
@@ -20,7 +20,7 @@ Click on any part of the path:
 - `heroWrapper` → jumps to Hero.default.heroWrapper
 - `visible` → jumps to the exact visible property
 
-![Go to Definition](images/demos/go-to-definition.png)
+![Go to Definition](images/demos/go-to-definition.gif)
 
 ### 🔍 Smart Hover Preview
 Hover over any segment of an EJS path to see the object or value at that level. No need to open JSON files to check structure or values.
@@ -39,7 +39,7 @@ Hover over any segment of an EJS path to see the object or value at that level. 
 - Hover on `liveTag` → Shows the liveTag object
 - Hover on `visible` → Shows the boolean value
 
-![Hover Preview](images/demos/hover-preview.png)
+![Hover Preview](images/demos/hover-preview.gif)
 
 ### ⚡ Intelligent Autocomplete
 Get real-time suggestions as you type EJS expressions. The extension provides context-aware completions based on your JSON structure.
@@ -62,7 +62,7 @@ Get real-time suggestions as you type EJS expressions. The extension provides co
 "{{%- s(Hero.default.heroWrapper.     ← Type here, see: liveTag, height, width, etc.
 ```
 
-![Autocomplete](images/demos/autocomplete.png)
+![Autocomplete](images/demos/autocomplete.gif)
 
 ### 📁 Flexible File Configuration
 Configure which JSON files to index using specific paths or glob patterns. Supports any number of JSON files across your project.
