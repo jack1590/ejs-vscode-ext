@@ -2,6 +2,19 @@
 
 All notable changes to the "EJS Navigator for Roku" extension will be documented in this file.
 
+## [0.0.4] - 2026-01-28
+
+### Added
+- Animated GIF demonstrations for all major features
+  - Go to Definition: Live demonstration of Cmd+Click navigation
+  - Hover Preview: Interactive tooltip showing object data
+  - Autocomplete: Real-time suggestion display
+- Visual documentation showing actual extension behavior
+
+### Changed
+- Replaced static screenshots with animated GIFs in README
+- Enhanced user experience with dynamic feature demonstrations
+
 ## [0.0.3] - 2026-01-28
 
 ### Added
