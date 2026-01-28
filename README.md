@@ -2,11 +2,26 @@
 
 Navigate from EJS template variables in your Roku BrightScript code to their definitions in `descarga.json` and `constants.json`.
 
+<!-- 
+TODO: Add demo GIFs here once recorded
+![Go to Definition Demo](images/demos/go-to-definition.gif)
+![Hover Preview Demo](images/demos/hover-preview.gif)
+-->
+
 ## Features
 
-- **Go to Definition**: Ctrl+Click (Cmd+Click on Mac) on EJS variables to jump to their definition in JSON files
-- **Hover Preview**: Hover over EJS variables to see their values
-- **Multi-file Support**: Supports `descarga.json`, `constants.json`, and other config files
+### 🎯 Go to Definition
+Ctrl+Click (Cmd+Click on Mac) on EJS variables to jump to their definition in JSON files.
+
+<!-- TODO: Add GIF showing Cmd+Click navigation -->
+
+### 🔍 Hover Preview
+Hover over EJS variables to see their values without opening the JSON file.
+
+<!-- TODO: Add GIF showing hover tooltip -->
+
+### 📁 Multi-file Support
+Automatically indexes `descarga.json`, `constants.json`, and other config files.
 
 ## Supported Patterns
 
